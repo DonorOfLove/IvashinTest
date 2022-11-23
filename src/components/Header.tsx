@@ -20,6 +20,7 @@ const Header:React.FC<IProps> = ({todos, setTodos}) => {
 
     return (
         <div>
+            <h2>Notes:</h2>
             <form onSubmit={submitHandler}>
                 <input type="text" value={val} onChange={e => setVal(e.target.value)}/>
                 <button type='submit'>+</button>

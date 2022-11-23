@@ -14,16 +14,23 @@ const Tags: React.FC<any> = ({curTag, setCurTag, tags, setTags}) => {
 
     const switchTag = (e: React.MouseEvent<HTMLButtonElement>): void => {
         let target = e.target as Element
-        setCurTag(target.innerHTML.substring(1))
+        if (curTag===target.innerHTML.substring(1)){
+            setCurTag('')
+        }else {
+            setCurTag(target.innerHTML.substring(1))
+        }
+
     }
 
-    const removeTag = (e: React.MouseEvent<HTMLButtonElement>): void => {
-        let target = e.target as Element
-        setTags(tags.filter((tag: string) => tag !== target.innerHTML))
+    const removeTag = (tag:string): void => {
+        if (curTag===tag.substring(1)){
+            setCurTag('')
+        }
+        setTags(tags.filter((cTag: string) => cTag !== tag))
     }
 
     const isChosen = (tag: string): boolean => {
-        if (curTag === tag) {
+        if (curTag === tag.substring(1)) {
             return true
         }
         return false
@@ -32,23 +39,31 @@ const Tags: React.FC<any> = ({curTag, setCurTag, tags, setTags}) => {
     const addTag = (e: React.ChangeEvent<HTMLFormElement>): void => {
         e.preventDefault()
         if (val.trim()) {
-            setTags(tags.concat(("#" + val)))
-            setVal('')
+            if (tags.includes("#"+val)){
+                alert('already exist')
+            } else{
+                setTags(tags.concat(("#" + val)))
+                setVal('')
+            }
         }
     }
 
     return (
         <div>
+            <h2>Tags:</h2>
             <form onSubmit={addTag}>
                 <input type="text" value={val} onChange={e => setVal(e.target.value)}/>
                 <button type='submit'>+</button>
             </form>
+            <div className='tags'>
+                {tags.map((tag: string) => {
+                    return <div className={isChosen(tag) ? ('taged') : ('')+'tag'}>
+                        <button onClick={switchTag}>{tag}</button>
+                        <button onClick={()=>removeTag(tag)}>x</button>
+                    </div>
+                })}
+            </div>
 
-            <h1>{curTag}</h1>
-            {tags.map((tag: string) => {
-                return <button className={isChosen(tag) ? ('taged') : ('')} onClick={switchTag}
-                               onContextMenu={removeTag}>{tag}</button>
-            })}
         </div>
     );
 };
