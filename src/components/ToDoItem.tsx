@@ -25,10 +25,9 @@ const ToDoItem: React.FC<ITodoProps> = ({todo, tags, setTags, setTodos, todos}) 
         e.preventDefault()
         let arr = e.target.innerText.split(' ')
         let newVal = []
-        console.log(arr)
         for (let word of arr) {
             if (word.trim()[0] === '#') {
-                setTags(tags.concat(word))
+                setTags(tags.concat(word.trim()))
                 newVal.push(word.trim().substring(1))
             } else {
                 newVal.push(word.trim())

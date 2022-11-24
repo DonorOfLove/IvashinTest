@@ -15,7 +15,7 @@ const Todos:React.FC<ITodosProps> = ({todos,tags,setTags,curTag,setTodos}) => {
         <div>
 
             {curTag?(todos.map((todo)=>{
-                return todo.title.includes(curTag)?(<ToDoItem curTag={curTag} todo={todo} tags={tags} setTags={setTags} setTodos={setTodos} todos={todos }/>):(null)
+                return todo.title.split(' ').includes(curTag)?(<ToDoItem curTag={curTag} todo={todo} tags={tags} setTags={setTags} setTodos={setTodos} todos={todos }/>):(null)
             })):(todos.map((todo)=>{
                 return <ToDoItem curTag={curTag} todo={todo} tags={tags} setTags={setTags} setTodos={setTodos} todos={todos }/>
             }))}
