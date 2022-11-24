@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Todo} from "../types/Todo";
+import {log} from "util";
 
 interface ITodoProps {
     setTodos: (todos: Todo[]) => void,
@@ -10,7 +11,8 @@ interface ITodoProps {
     setTags: (tags: string[]) => void
 }
 
-const ToDoItem: React.FC<ITodoProps> = ({todo, curTag, tags, setTags, setTodos, todos}) => {
+const ToDoItem: React.FC<ITodoProps> = ({todo, tags, setTags, setTodos, todos}) => {
+
     const [val, setVal] = useState<string>(todo.title)
 
     const [isChangeMod, setIsChangeMod] = useState<boolean>(false)
@@ -19,18 +21,20 @@ const ToDoItem: React.FC<ITodoProps> = ({todo, curTag, tags, setTags, setTodos, 
         setIsChangeMod(!isChangeMod)
     }
 
-    const saveChanges = (e: React.ChangeEvent<HTMLFormElement>): void => {
+    const saveChanges = (e: React.ChangeEvent<HTMLDivElement>): void => {
         e.preventDefault()
-        let arr = val.split(' ')
+        let arr = e.target.innerText.split(' ')
         let newVal = []
+        console.log(arr)
         for (let word of arr) {
-            if (word[0] === '#') {
+            if (word.trim()[0] === '#') {
                 setTags(tags.concat(word))
-                newVal.push(word.substring(1))
+                newVal.push(word.trim().substring(1))
             } else {
-                newVal.push(word)
+                newVal.push(word.trim())
             }
         }
+        console.log(todos)
         todo.title = newVal.join(' ')
         setIsChangeMod(!isChangeMod)
     }
@@ -43,31 +47,30 @@ const ToDoItem: React.FC<ITodoProps> = ({todo, curTag, tags, setTags, setTodos, 
         }
         setTodos(newTodos)
     }
+
     const removeTodo = (todo:Todo):void => {
         setTodos(todos.filter((cTodo: Todo) => cTodo.id !== todo.id))
 
     }
+
     return (
         <div className='item'>
             {!isChangeMod ? (<>
                 <input type='checkbox' checked={todo.done} onChange={toggle}/>
-                <span className={todo.done ? ('done') : ('')} contentEditable={true}>
+                <span className={todo.done ? ('done') : ('')}  onClick={changeToDo}>
                     {todo.title}
                </span>
                 <div className='tag'>
-                    <button onClick={changeToDo}> edit</button>
                     <button onClick={()=>removeTodo(todo)}>x</button>
                 </div>
             </>) : (
                 <>
-                    <form onSubmit={saveChanges}>
-
-                        <div contentEditable={true}></div>
-                        {/*<input type="text" value={val} onChange={e => setVal(e.target.value)}/>*/}
-                    </form>
+                        <div contentEditable={true} onBlur={saveChanges} className="edit_field">{todo.title.split(' ').map((word)=>{
+                            return tags.includes('#'+word)?(<span className='taged_word' contentEditable={false}>{word} </span>):(<span>{word} </span>)
+                        })}</div>
                 </>)}
         </div>
     );
 };
 
-export default React.memo(ToDoItem);
+export default ToDoItem;
