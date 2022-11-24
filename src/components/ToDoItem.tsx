@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Todo} from "../types/Todo";
-import {log} from "util";
 
 interface ITodoProps {
     setTodos: (todos: Todo[]) => void,
@@ -13,13 +12,7 @@ interface ITodoProps {
 
 const ToDoItem: React.FC<ITodoProps> = ({todo, tags, setTags, setTodos, todos}) => {
 
-    const [val, setVal] = useState<string>(todo.title)
-
     const [isChangeMod, setIsChangeMod] = useState<boolean>(false)
-
-    const changeToDo = (e: React.MouseEvent<HTMLButtonElement>): void => {
-        setIsChangeMod(!isChangeMod)
-    }
 
     const saveChanges = (e: React.ChangeEvent<HTMLDivElement>): void => {
         e.preventDefault()
@@ -38,7 +31,7 @@ const ToDoItem: React.FC<ITodoProps> = ({todo, tags, setTags, setTodos, todos}) 
         setIsChangeMod(!isChangeMod)
     }
 
-    const toggle = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const toggle = (): void => {
         const newTodos = [...todos];
         newTodos[todos.indexOf(todo)] = {
             ...newTodos[todos.indexOf(todo)],
@@ -47,26 +40,28 @@ const ToDoItem: React.FC<ITodoProps> = ({todo, tags, setTags, setTodos, todos}) 
         setTodos(newTodos)
     }
 
-    const removeTodo = (todo:Todo):void => {
+    const removeTodo = (todo: Todo): void => {
         setTodos(todos.filter((cTodo: Todo) => cTodo.id !== todo.id))
-
     }
 
     return (
         <div className='item'>
             {!isChangeMod ? (<>
                 <input type='checkbox' checked={todo.done} onChange={toggle}/>
-                <span className={todo.done ? ('done') : ('')}  onClick={changeToDo}>
+                <span className={todo.done ? ('done') : ('')} onClick={() => setIsChangeMod(!isChangeMod)}>
                     {todo.title}
                </span>
                 <div className='tag'>
-                    <button onClick={()=>removeTodo(todo)}>x</button>
+                    <button onClick={() => removeTodo(todo)}>x</button>
                 </div>
             </>) : (
                 <>
-                        <div contentEditable={true} onBlur={saveChanges} className="edit_field">{todo.title.split(' ').map((word)=>{
-                            return tags.includes('#'+word)?(<span className='taged_word' contentEditable={false}>{word} </span>):(<span>{word} </span>)
-                        })}</div>
+                    <div contentEditable={true} onBlur={saveChanges}
+                         className="edit_field">{todo.title.split(' ').map((word) => {
+                        return tags.includes('#' + word) ? (
+                            <span className='taged_word' contentEditable={false}>{word} </span>) : (
+                            <span>{word} </span>)
+                    })}</div>
                 </>)}
         </div>
     );

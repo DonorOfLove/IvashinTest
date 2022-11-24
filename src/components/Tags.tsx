@@ -1,47 +1,44 @@
 import React, {useState} from 'react';
 
-interface ITagsProps{
-    curTag:string,
-    setCurTag:(curTag:string)=>void,
-    tags:string[],
-    setTags:(tags:string[])=>void
-
+interface ITagsProps {
+    curTag: string,
+    setCurTag: (curTag: string) => void,
+    tags: string[],
+    setTags: (tags: string[]) => void
 }
 
-const Tags: React.FC<any> = ({curTag, setCurTag, tags, setTags}) => {
+const Tags: React.FC<ITagsProps> = ({curTag, setCurTag, tags, setTags}) => {
 
     const [val, setVal] = useState<string>('')
 
     const switchTag = (e: React.MouseEvent<HTMLButtonElement>): void => {
         let target = e.target as Element
-        if (curTag===target.innerHTML.substring(1)){
+        if (curTag === target.innerHTML.substring(1)) {
             setCurTag('')
-        }else {
+        } else {
             setCurTag(target.innerHTML.substring(1))
         }
 
     }
 
-    const removeTag = (tag:string): void => {
-        if (curTag===tag.substring(1)){
+    const removeTag = (tag: string): void => {
+        if (curTag === tag.substring(1)) {
             setCurTag('')
         }
         setTags(tags.filter((cTag: string) => cTag !== tag))
     }
 
     const isChosen = (tag: string): boolean => {
-        if (curTag === tag.substring(1)) {
-            return true
-        }
-        return false
+        return curTag === tag.substring(1);
+
     }
 
     const addTag = (e: React.ChangeEvent<HTMLFormElement>): void => {
         e.preventDefault()
         if (val.trim()) {
-            if (tags.includes("#"+val)){
+            if (tags.includes("#" + val)) {
                 alert('already exist')
-            } else{
+            } else {
                 setTags(tags.concat(("#" + val)))
                 setVal('')
             }
@@ -57,9 +54,9 @@ const Tags: React.FC<any> = ({curTag, setCurTag, tags, setTags}) => {
             </form>
             <div className='tags'>
                 {tags.map((tag: string) => {
-                    return <div className={isChosen(tag) ? ('taged') : ('')+'tag'}>
+                    return <div className={isChosen(tag) ? ('taged') : ('') + 'tag'}>
                         <button onClick={switchTag}>{tag}</button>
-                        <button onClick={()=>removeTag(tag)}>x</button>
+                        <button onClick={() => removeTag(tag)}>x</button>
                     </div>
                 })}
             </div>
